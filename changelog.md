@@ -1,3 +1,11 @@
+## [2026-09-18] - Consentimento opcional de WhatsApp
+
+- Adicionado checkbox de marketing desmarcado por padrão, com texto integral e link à Política de Privacidade.
+- O lead continua sendo salvo na tabela `imersao_x5med_leads` e o pixel `CompleteRegistration` permanece após sucesso.
+- A migration `20260918180000` registra a decisão com timestamp e evidência gerados no banco e sincroniza contatos por telefone normalizado com o Metrics, sem remover consentimentos anteriores quando a opção está vazia.
+- O mesmo mecanismo atende às LPs Secretaria de Alta Performance e Curso Secretaria, que usam essa tabela.
+- Testes SQL transacionais cobrem aceite, ausência de aceite, repetição, telefone formatado e opt-out.
+
 ## [2026-06-03b] - Codex (Hero reorganizado)
 
 ### Changed

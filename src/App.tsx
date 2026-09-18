@@ -1236,6 +1236,7 @@ function SocialProof() {
 }
 
 function Candidatura() {
+  const consentText = 'Quero receber pelo WhatsApp informações, conteúdos e ofertas da X5 Med sobre este programa. Posso cancelar a qualquer momento respondendo PARAR.';
   const [form, setForm] = useState({
     nome: '',
     email: '',
@@ -1245,6 +1246,8 @@ function Candidatura() {
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [whatsappConsent, setWhatsappConsent] = useState(false);
+  const submissionId = useRef<string | null>(null);
 
   useEffect(() => { captureUtmParams(); }, []);
 
@@ -1276,15 +1279,20 @@ function Candidatura() {
 
     try {
       const utm = getUtmParams();
+      submissionId.current ??= crypto.randomUUID();
       const { error } = await supabase.from('imersao_x5med_leads').insert({
         nome: cleanNome,
         email: cleanEmail,
         whatsapp: cleanWhatsapp,
         instagram: cleanInstagram,
         faixa_faturamento: form.faturamento,
+        form_submission_id: submissionId.current,
+        whatsapp_consent: whatsappConsent,
+        whatsapp_consent_source: 'landing_page_imersao_x5med',
+        whatsapp_consent_evidence: { page_url: window.location.href },
         ...utm,
       });
-      if (error) throw error;
+      if (error && !(error.code === '23505' && error.message.includes('form_submission_id'))) throw error;
       setStatus('success');
       window.fbq?.('track', 'CompleteRegistration', {
         content_name: 'Imersão X5 Med Online',
@@ -1419,6 +1427,14 @@ function Candidatura() {
             <p className="mt-2 text-xs text-gray-500">
               Usamos essa informação apenas para direcionar a conversa ao seu momento atual.
             </p>
+          </div>
+
+          <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4 text-sm leading-relaxed text-gray-300">
+            <input id="whatsapp-marketing-consent" type="checkbox" checked={whatsappConsent} onChange={(event) => setWhatsappConsent(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-brand-orange" />
+            <div>
+              <label htmlFor="whatsapp-marketing-consent" className="cursor-pointer">{consentText}</label>
+              <a href="https://metrics.x5med.com.br/politica-de-privacidade" target="_blank" rel="noopener noreferrer" className="mt-2 block text-brand-orange underline">Política de Privacidade ↗</a>
+            </div>
           </div>
 
           <button

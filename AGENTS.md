@@ -140,7 +140,8 @@ Skills que podem ser ativadas neste projeto:
 Os leads do formulário "Reservar minha vaga" são persistidos no projeto Supabase **Leads Magnet** (`azxmienpmmkddmvyujbm`), o mesmo usado pelo EndoMax, **em tabela separada**.
 
 - **Tabela**: `public.imersao_x5med_leads`
-- **Campos**: `nome, email, whatsapp, instagram?, faixa_faturamento, utm_source, utm_medium, utm_campaign, utm_content, utm_term, ref, created_at`
+- **Campos**: `nome, email, whatsapp, instagram?, faixa_faturamento, utm_source, utm_medium, utm_campaign, utm_content, utm_term, ref, created_at` e campos `form_submission_id`, `whatsapp_consent*` para a decisão opcional de marketing.
+- **Consentimento**: migration `20260918180000_lp_whatsapp_consent.sql` no Supabase canônico. Um trigger gera timestamp/evidência no servidor e sincroniza `crm_contacts` pelo telefone normalizado para Imersão e as duas LPs da Secretaria; checkbox vazio mantém contatos fora de campanhas sem revogar aceite anterior.
 - **RLS**: habilitada. Policy `leads_insert_policy` permite INSERT para role `anon` com validação de formato (nome 2-200, regex de email, whatsapp só dígitos 8-20). Sem policies de SELECT/UPDATE/DELETE — só `service_role` lê os leads.
 - **Cliente**: `src/lib/supabase.ts`. Credenciais em `.env` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
 - **UTM tracking**: `src/lib/utm.ts` — first-touch attribution em sessionStorage.
