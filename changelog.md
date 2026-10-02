@@ -1,3 +1,9 @@
+## [2026-10-02] - Tracking centralizado no GTM
+
+- Substituído o pixel direto pelo contêiner global `GTM-M4GT66JQ`, com Consent Mode e aviso de privacidade próprio para o domínio `x5med.cloud`.
+- Padronizados os eventos de CTA, formulário, geração de lead e erros; o lead envia valor, moeda, faixa de faturamento e contato normalizado.
+- Mantido o Pixel da Imersão pelo roteamento por domínio configurado no Google Tag Manager.
+
 ## [2026-09-18] - Consentimento opcional de WhatsApp
 
 - Adicionado checkbox de marketing desmarcado por padrão, com texto integral e link à Política de Privacidade.

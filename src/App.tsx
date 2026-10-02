@@ -6,8 +6,13 @@ import { captureUtmParams, getUtmParams } from './lib/utm';
 
 declare global {
   interface Window {
-    fbq?: (...args: unknown[]) => void;
+    dataLayer?: Array<Record<string, unknown>>;
   }
+}
+
+function pushTrackingEvent(event: string, payload: Record<string, unknown> = {}) {
+  window.dataLayer ||= [];
+  window.dataLayer.push({ event, ...payload });
 }
 
 // Fotos reais dos especialistas
@@ -89,7 +94,15 @@ function Button({ children, href, variant = 'primary', className = '' }: { child
   };
 
   return (
-    <a href={href} className={`${baseStyle} ${variants[variant]} ${className}`}>
+    <a
+      href={href}
+      className={`${baseStyle} ${variants[variant]} ${className}`}
+      onClick={() => pushTrackingEvent("cta_click", {
+        cta_position: variant,
+        cta_label: typeof children === "string" ? children : "Imersão X5 Med",
+        destination_url: href,
+      })}
+    >
       {children}
     </a>
   );
@@ -1248,10 +1261,15 @@ function Candidatura() {
   const [errorMsg, setErrorMsg] = useState('');
   const [whatsappConsent, setWhatsappConsent] = useState(false);
   const submissionId = useRef<string | null>(null);
+  const formStarted = useRef(false);
 
   useEffect(() => { captureUtmParams(); }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (!formStarted.current) {
+      formStarted.current = true;
+      pushTrackingEvent('form_start', { form_name: 'imersao_x5med_online' });
+    }
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -1268,12 +1286,23 @@ function Candidatura() {
     if (cleanWhatsapp.length < 10) {
       setErrorMsg('Informe um WhatsApp válido com DDD para o time confirmar sua vaga.');
       setStatus('error');
+      pushTrackingEvent('form_error', {
+        form_name: 'imersao_x5med_online',
+        error_type: 'validation',
+        error_field: 'whatsapp',
+        error_message: 'WhatsApp inválido',
+      });
       return;
     }
 
     if (!isSupabaseConfigured || !supabase) {
       setErrorMsg('Formulário indisponível no momento. Tente novamente em instantes.');
       setStatus('error');
+      pushTrackingEvent('form_error', {
+        form_name: 'imersao_x5med_online',
+        error_type: 'configuration',
+        error_message: 'Supabase indisponível',
+      });
       return;
     }
 
@@ -1294,16 +1323,26 @@ function Candidatura() {
       });
       if (error && !(error.code === '23505' && error.message.includes('form_submission_id'))) throw error;
       setStatus('success');
-      window.fbq?.('track', 'CompleteRegistration', {
-        content_name: 'Imersão X5 Med Online',
-        status: true,
+      pushTrackingEvent('generate_lead', {
+        form_name: 'imersao_x5med_online',
+        lead_type: 'imersao_x5med_online',
+        faixa_faturamento: form.faturamento,
         value: 297,
         currency: 'BRL',
+        user_data: {
+          email_address: cleanEmail,
+          phone_number: cleanWhatsapp,
+        },
       });
     } catch (err) {
       console.error('Erro ao salvar lead:', err);
       setErrorMsg('Ocorreu um erro ao enviar sua reserva. Tente novamente.');
       setStatus('error');
+      pushTrackingEvent('form_error', {
+        form_name: 'imersao_x5med_online',
+        error_type: 'submit',
+        error_message: 'Falha ao salvar lead',
+      });
     }
   };
 

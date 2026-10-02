@@ -196,6 +196,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -228,4 +229,34 @@ select {
   .fire-glow-overlay {
     animation: none !important;
   }
+}
+
+/* Consentimento de analytics e publicidade */
+.consent-banner {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 1200;
+  display: grid;
+  width: min(560px, calc(100% - 32px));
+  padding: 22px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 22px;
+  background: rgba(4,18,36,.97);
+  box-shadow: 0 22px 70px rgba(0,0,0,.42);
+  color: #fff;
+  backdrop-filter: blur(18px);
+}
+.consent-banner strong { font-size: .92rem; }
+.consent-banner p { margin: 8px 0 0; color: rgba(232,240,248,.8); font-size: .82rem; line-height: 1.55; }
+.consent-banner a { color: #f4b540; text-underline-offset: 3px; }
+.consent-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.consent-actions button { min-height: 42px; padding: 0 18px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; font: 700 .72rem/1 sans-serif; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; }
+.consent-reject { background: transparent; color: rgba(255,255,255,.84); }
+.consent-accept { border-color: #f4b540 !important; background: #f4b540; color: #07111f; }
+.consent-actions button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (max-width: 600px) {
+  .consent-banner { right: 16px; bottom: 16px; padding: 20px 18px; border-radius: 20px; }
+  .consent-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .consent-actions button { width: 100%; padding-inline: 12px; }
 }

@@ -13,26 +13,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
 
-    <!-- Meta Pixel Code -->
     <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '4697356290547354');
-      fbq('track', 'PageView');
+      (function(w,d){
+        w.dataLayer=w.dataLayer||[];
+        w.gtag=w.gtag||function(){w.dataLayer.push(arguments);};
+        var match=d.cookie.match(/(?:^|; )x5med_consent=([^;]*)/);
+        var choice=match?decodeURIComponent(match[1]):'unknown';
+        var granted=choice==='accepted';
+        w.gtag('consent','default',{
+          ad_storage:granted?'granted':'denied',analytics_storage:granted?'granted':'denied',
+          ad_user_data:granted?'granted':'denied',ad_personalization:granted?'granted':'denied',
+          functionality_storage:'granted',security_storage:'granted',wait_for_update:500
+        });
+        w.dataLayer.push({event:'consent_default',consent_choice:choice});
+      })(window,document);
     </script>
-    <!-- End Meta Pixel Code -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-M4GT66JQ');
+    </script>
   </head>
   <body>
-    <!-- Meta Pixel noscript fallback -->
-    <noscript><img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=4697356290547354&ev=PageView&noscript=1"
-    /></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M4GT66JQ" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
